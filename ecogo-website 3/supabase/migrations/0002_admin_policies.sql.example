@@ -1,0 +1,42 @@
+-- OPTIONAL, NOT RUN AUTOMATICALLY (note the .example extension).
+-- Use this as the starting point when you build an admin area.
+--
+-- 1. In Supabase > Authentication, create your admin user (invite yourself by email).
+-- 2. Mark that user as admin. Run this once in the SQL editor, replacing the email:
+--
+--      update auth.users
+--         set raw_app_meta_data = raw_app_meta_data || '{"role":"admin"}'
+--       where email = 'you@example.com';
+--
+--    app_metadata can only be changed by the server/dashboard, never by the user themselves,
+--    which is why it is safe to base policies on.
+-- 3. Apply the policies below. Admins signed in through the normal anon key then get full access
+--    to these tables; everyone else keeps the limited access from 0001.
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+set search_path = ''
+as $$
+  select coalesce((select auth.jwt()) -> 'app_metadata' ->> 'role', '') = 'admin'
+$$;
+
+grant select, insert, update, delete on public.products, public.projects to authenticated;
+grant select, update, delete on public.contact_submissions to authenticated;
+grant select, delete on public.newsletter_subscribers to authenticated;
+
+create policy "Admins manage products" on public.products
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+create policy "Admins manage projects" on public.projects
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+create policy "Admins read contact submissions" on public.contact_submissions
+  for select to authenticated using (public.is_admin());
+
+create policy "Admins update contact submissions" on public.contact_submissions
+  for update to authenticated using (public.is_admin()) with check (public.is_admin());
+
+create policy "Admins read subscribers" on public.newsletter_subscribers
+  for select to authenticated using (public.is_admin());
