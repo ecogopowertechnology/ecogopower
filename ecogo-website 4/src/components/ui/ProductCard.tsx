@@ -23,6 +23,18 @@ export function Price({ product, className = '' }: { product: Pick<Product, 'pri
   )
 }
 
+/** Bulk-buyer price line, shown under the normal price when a wholesale price is set. */
+export function WholesalePrice({ product, className = '' }: { product: Pick<Product, 'wholesalePriceKes' | 'wholesaleMoq' | 'status'>; className?: string }) {
+  if (product.status === 'in_development' || product.wholesalePriceKes === null) return null
+  const moq = product.wholesaleMoq
+  return (
+    <p className={`text-sm text-slate-ink ${className}`}>
+      <span className="font-semibold text-ink-900">Wholesale {formatKes(product.wholesalePriceKes)} each</span>
+      {moq !== null && moq > 1 ? `, from ${moq} pieces` : ''}
+    </p>
+  )
+}
+
 /** WhatsApp message for a given product and intent. */
 export function productMessage(p: Product): string {
   if (p.status === 'available') {
@@ -100,6 +112,7 @@ export function ProductCard({ product }: { product: Product }) {
           <StatusBadge status={product.status} />
           <Price product={product} />
         </div>
+        <WholesalePrice product={product} className="mt-2" />
         <div className="mt-auto pt-6">
           <ProductAction product={product} className="w-full" />
         </div>

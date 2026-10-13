@@ -26,6 +26,8 @@ interface Row {
   category: string
   summary: string
   price_kes: number | null
+  wholesale_price_kes: number | null
+  wholesale_moq: number | null
   features: string[] | null
   use_case: string | null
   status: ProductStatus
@@ -43,6 +45,8 @@ const fromRow = (r: Row): AdminProduct => ({
   category: r.category,
   summary: r.summary,
   priceKes: r.price_kes,
+  wholesalePriceKes: r.wholesale_price_kes,
+  wholesaleMoq: r.wholesale_moq,
   features: r.features ?? [],
   useCase: r.use_case,
   status: r.status,
@@ -68,6 +72,8 @@ export interface ProductInput {
   category: string
   summary: string
   priceKes: number | null
+  wholesalePriceKes: number | null
+  wholesaleMoq: number | null
   features: string[]
   useCase: string
   status: ProductStatus
@@ -81,6 +87,8 @@ const toColumns = (p: ProductInput) => ({
   category: p.category,
   summary: p.summary,
   price_kes: p.priceKes,
+  wholesale_price_kes: p.wholesalePriceKes,
+  wholesale_moq: p.wholesaleMoq,
   features: p.features,
   use_case: p.useCase.trim() === '' ? null : p.useCase.trim(),
   status: p.status,

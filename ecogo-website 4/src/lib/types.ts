@@ -7,6 +7,9 @@ export interface Product {
   category: string
   summary: string
   priceKes: number | null
+  /** Wholesale price per unit, and the smallest order it applies to. */
+  wholesalePriceKes: number | null
+  wholesaleMoq: number | null
   features: string[]
   useCase: string | null
   status: ProductStatus

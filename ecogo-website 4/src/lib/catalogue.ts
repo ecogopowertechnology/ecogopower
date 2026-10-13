@@ -8,6 +8,8 @@ interface ProductRow {
   category: string
   summary: string
   price_kes: number | null
+  wholesale_price_kes: number | null
+  wholesale_moq: number | null
   features: string[] | null
   use_case: string | null
   status: ProductStatus
@@ -32,6 +34,8 @@ const toProduct = (r: ProductRow): Product => ({
   category: r.category,
   summary: r.summary,
   priceKes: r.price_kes,
+  wholesalePriceKes: r.wholesale_price_kes,
+  wholesaleMoq: r.wholesale_moq,
   features: r.features ?? [],
   useCase: r.use_case,
   status: r.status,
@@ -50,7 +54,7 @@ const toProject = (r: ProjectRow): Project => ({
 })
 
 export const PRODUCT_COLUMNS =
-  'id, slug, name, category, summary, price_kes, features, use_case, status, visual_key, image_url, cta_label'
+  'id, slug, name, category, summary, price_kes, wholesale_price_kes, wholesale_moq, features, use_case, status, visual_key, image_url, cta_label'
 
 /**
  * Published products, in display order. Returns null when Supabase is unavailable (not configured or an error),
