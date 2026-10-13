@@ -58,6 +58,7 @@ export function ProductsAdmin() {
                 <span className="block text-sm text-slate-ink">{p.category}</span>
                 <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
                   <span className="font-semibold">{p.priceKes !== null ? formatKes(p.priceKes) : 'No price'}</span>
+                  {p.wholesalePriceKes !== null && <span className="text-sm text-slate-ink">Wholesale {formatKes(p.wholesalePriceKes)}</span>}
                   <StatusBadge status={p.status} />
                   {!p.isPublished && <span className="rounded-full bg-mist-300 px-3 py-1 text-sm font-semibold">Hidden</span>}
                 </span>

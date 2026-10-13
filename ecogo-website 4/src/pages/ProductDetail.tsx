@@ -4,7 +4,7 @@ import { useProducts } from '@/hooks/useCatalogue'
 import { Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
 import { StatusBadge } from '@/components/ui/StatusBadge'
-import { Price, ProductAction } from '@/components/ui/ProductCard'
+import { Price, ProductAction, WholesalePrice } from '@/components/ui/ProductCard'
 import { CheckIcon } from '@/components/ui/Icons'
 import { ProductVisual } from '@/components/visuals/ProductVisual'
 
@@ -48,6 +48,7 @@ export default function ProductDetail() {
             <StatusBadge status={product.status} />
             <Price product={product} className="!text-3xl" />
           </div>
+          <WholesalePrice product={product} className="mt-3 !text-base" />
           <p className="t-lead mt-6">{product.summary}</p>
 
           {product.features.length > 0 && (

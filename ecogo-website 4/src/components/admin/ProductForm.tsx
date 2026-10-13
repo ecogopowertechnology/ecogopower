@@ -26,6 +26,8 @@ export function ProductForm({ product, categories, onDone, onCancel }: Props) {
   const [category, setCategory] = useState(product?.category ?? '')
   const [summary, setSummary] = useState(product?.summary ?? '')
   const [price, setPrice] = useState(product?.priceKes != null ? String(product.priceKes) : '')
+  const [wholesale, setWholesale] = useState(product?.wholesalePriceKes != null ? String(product.wholesalePriceKes) : '')
+  const [moq, setMoq] = useState(product?.wholesaleMoq != null ? String(product.wholesaleMoq) : '')
   const [features, setFeatures] = useState((product?.features ?? []).join('\n'))
   const [useCase, setUseCase] = useState(product?.useCase ?? '')
   const [status, setStatus] = useState<ProductStatus>(product?.status ?? 'available')
@@ -42,12 +44,17 @@ export function ProductForm({ product, categories, onDone, onCancel }: Props) {
   // Accept the way people naturally type prices: 1,500 or KSh 1500.
   const cleanPrice = price.replace(/ksh|kes/gi, '').replace(/[,\s]/g, '')
 
+  const cleanWholesale = wholesale.replace(/ksh|kes/gi, '').replace(/[,\s]/g, '')
+  const cleanMoq = moq.replace(/[,\s]/g, '')
+
   function validate() {
     const e: Record<string, string> = {}
     if (!name.trim()) e.name = 'Enter the product name.'
     if (!category.trim()) e.category = 'Enter a category, for example "Solar and energy".'
     if (!summary.trim()) e.summary = 'Write a short description.'
     if (cleanPrice !== '' && !/^\d+$/.test(cleanPrice)) e.price = 'Enter whole shillings, for example 1500. Leave empty to show "Message us for the price".'
+    if (cleanWholesale !== '' && !/^\d+$/.test(cleanWholesale)) e.wholesale = 'Enter whole shillings, for example 1200. Leave empty if there is no wholesale price.'
+    if (cleanMoq !== '' && !/^[1-9]\d*$/.test(cleanMoq)) e.moq = 'Enter a whole number, for example 10.'
     if (!/^\d+$/.test(sortOrder.trim())) e.sortOrder = 'Enter a whole number.'
     return e
   }
@@ -69,6 +76,8 @@ export function ProductForm({ product, categories, onDone, onCancel }: Props) {
         category: category.trim(),
         summary: summary.trim(),
         priceKes: cleanPrice === '' ? null : Number(cleanPrice),
+        wholesalePriceKes: cleanWholesale === '' ? null : Number(cleanWholesale),
+        wholesaleMoq: cleanMoq === '' ? null : Number(cleanMoq),
         features: features.split('\n').map((l) => l.trim()).filter(Boolean),
         useCase,
         status,
@@ -155,6 +164,15 @@ export function ProductForm({ product, categories, onDone, onCancel }: Props) {
         </Field>
         <Field id={`${uid}-price`} label="Price in Kenya shillings" optional error={errors.price} hint="Numbers only, for example 1500.">
           {(aria) => <input id={`${uid}-price`} inputMode="numeric" className={inputClass} value={price} onChange={(e) => setPrice(e.target.value)} {...aria} />}
+        </Field>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field id={`${uid}-wholesale`} label="Wholesale price in Kenya shillings" optional error={errors.wholesale} hint="Price per unit for bulk buyers. Numbers only.">
+          {(aria) => <input id={`${uid}-wholesale`} inputMode="numeric" className={inputClass} value={wholesale} onChange={(e) => setWholesale(e.target.value)} {...aria} />}
+        </Field>
+        <Field id={`${uid}-moq`} label="Wholesale minimum order" optional error={errors.moq} hint="Smallest number of pieces for the wholesale price, for example 10.">
+          {(aria) => <input id={`${uid}-moq`} inputMode="numeric" className={inputClass} value={moq} onChange={(e) => setMoq(e.target.value)} {...aria} />}
         </Field>
       </div>
 
